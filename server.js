@@ -4,15 +4,9 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ==========================================
-// MIDDLEWARES
-// ==========================================
-app.use(cors()); // Permite peticiones desde otros dominios (ej. GitHub Pages)
-app.use(express.json()); // Permite a Express entender el cuerpo (body) de peticiones POST en formato JSON
+app.use(cors()); 
+app.use(express.json());
 
-// ==========================================
-// SIMULACIÓN DE BASE DE DATOS (En Memoria)
-// ==========================================
 let productos = [
     { id: 1, nombre: "Procesador AMD Ryzen 7 5700U", precio: 4500, stock: 10 },
     { id: 2, nombre: "Laptop ASUS TUF Gaming A15", precio: 18000, stock: 5 },
@@ -22,16 +16,13 @@ let productos = [
 
 let pedidos = [];
 
-// ==========================================
-// ENDPOINTS (API REST)
-// ==========================================
 
-// 1. GET: Obtener todos los productos
+// GET: Obtener todos los productos
 app.get('/api/v1/productos', (req, res) => {
     res.status(200).json(productos);
 });
 
-// 2. GET: Obtener un producto específico por ID
+// GET: Obtener un producto específico por ID
 app.get('/api/v1/productos/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const producto = productos.find(p => p.id === id);
@@ -42,9 +33,8 @@ app.get('/api/v1/productos/:id', (req, res) => {
     res.status(200).json(producto);
 });
 
-// 3. POST: Crear un nuevo pedido (Compra)
+// POST: Crear un nuevo pedido
 app.post('/api/v1/pedidos', (req, res) => {
-    // Esperamos recibir { "productoId": 2, "cantidad": 1, "cliente": "Diego" }
     const { productoId, cantidad, cliente } = req.body;
 
     const producto = productos.find(p => p.id === productoId);
@@ -57,7 +47,6 @@ app.post('/api/v1/pedidos', (req, res) => {
         return res.status(400).json({ error: "Stock insuficiente para realizar la compra" });
     }
 
-    // Lógica de negocio: Descontar stock y registrar el pedido
     producto.stock -= cantidad;
     
     const nuevoPedido = {
@@ -71,21 +60,18 @@ app.post('/api/v1/pedidos', (req, res) => {
     
     pedidos.push(nuevoPedido);
 
-    // 201 Created
     res.status(201).json({
         mensaje: "Pedido procesado con éxito",
         pedido: nuevoPedido
     });
 });
 
-// 4. GET: Ver todos los pedidos (Solo para administración)
+// GET: Ver todos los pedidos (Solo para administración)
 app.get('/api/v1/pedidos', (req, res) => {
     res.status(200).json(pedidos);
 });
 
-// ==========================================
-// INICIO DEL SERVIDOR
-// ==========================================
+
 app.listen(PORT, () => {
     console.log(`[API REST] Servidor corriendo en http://localhost:${PORT}`);
 });
