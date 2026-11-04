@@ -1,5 +1,5 @@
-# Usamos una imagen oficial de Node.js ligera (Alpine Linux)
-FROM node:20-alpine
+# Actualizamos a Node.js 22 para soportar WebSockets nativos de Supabase
+FROM node:22-alpine
 
 # Establecemos el directorio de trabajo dentro del contenedor
 WORKDIR /usr/src/app
@@ -7,10 +7,10 @@ WORKDIR /usr/src/app
 # Copiamos primero los archivos de dependencias
 COPY package*.json ./
 
-# Instalamos las librerías (Express y CORS) dentro del contenedor
+# Instalamos las librerías dentro del contenedor
 RUN npm install
 
-# Copiamos el resto del código (server.js)
+# Copiamos el resto del código
 COPY . .
 
 # Exponemos el puerto que usa nuestra API
