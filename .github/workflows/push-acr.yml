@@ -1,6 +1,8 @@
 name: Build and Push to ACR
 
 on:
+  push:
+    branches: [ "practica-08" ]
   workflow_dispatch:
 
 jobs:
