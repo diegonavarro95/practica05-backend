@@ -1,0 +1,31 @@
+name: Build and Push to ACR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: acrtiendadiego2026.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push 4 microservices
+        run: |
+          docker build -t acrtiendadiego2026.azurecr.io/ms-productos:v1 ./ms-productos
+          docker push acrtiendadiego2026.azurecr.io/ms-productos:v1
+
+          docker build -t acrtiendadiego2026.azurecr.io/ms-carritos:v1 ./ms-carritos
+          docker push acrtiendadiego2026.azurecr.io/ms-carritos:v1
+
+          docker build -t acrtiendadiego2026.azurecr.io/ms-pedidos:v1 ./ms-pedidos
+          docker push acrtiendadiego2026.azurecr.io/ms-pedidos:v1
+
+          docker build -t acrtiendadiego2026.azurecr.io/api-gateway:v1 ./api-gateway
+          docker push acrtiendadiego2026.azurecr.io/api-gateway:v1
